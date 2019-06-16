@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>bouncy simulator</title>
+  </head>
+  <body>
+    <div class="container"></div>
+  </body>
+  <style>
+    .col {
+      width: 20px;
+      height: 20px;
+      border: 1px solid #000;
+    }
+    .border {
+      background: #000;
+    }
+    .ball {
+      background: red;
+      border-radius: 50%;
+    }
+    .row {
+      display: flex;
+    }
+  </style>
+  <script>
+    // let board = [
+    //   ["X", "X", "X", "X", "X", "X", "X"],
+    //   ["X", "1", "0", "0", "0", "0", "X"],
+    //   ["X", "0", "0", "0", "0", "0", "X"],
+    //   ["X", "0", "0", "0", "0", "0", "X"],
+    //   ["X", "0", "0", "0", "0", "0", "X"],
+    //   ["X", "0", "0", "0", "0", "0", "X"],
+    //   ["X", "0", "0", "0", "0", "0", "X"],
+    //   ["X", "0", "0", "0", "0", "0", "X"],
+    //   ["X", "0", "0", "0", "0", "0", "X"],
+    //   ["X", "X", "X", "X", "X", "X", "X"]
+    // ];
+
+    let board = [
+      ["X", "X", "X", "X", "X", "X", "X", "X", "X", "X", "X", "X"],
+      ["X", "1", "0", "X", "X", "X", "X", "X", "X", "X", "X", "X"],
+      ["X", "0", "0", "0", "X", "X", "X", "X", "X", "X", "X", "X"],
+      ["X", "0", "0", "0", "0", "X", "X", "X", "X", "X", "X", "X"],
+      ["X", "0", "0", "0", "0", "0", "X", "X", "X", "X", "X", "X"],
+      ["X", "0", "0", "0", "0", "0", "0", "X", "X", "X", "X", "X"],
+      ["X", "0", "0", "0", "0", "0", "0", "0", "X", "X", "X", "X"],
+      ["X", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "X"],
+      ["X", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "X"],
+      ["X", "0", "0", "0", "X", "0", "0", "0", "0", "0", "0", "X"],
+      ["X", "0", "0", "X", "X", "X", "0", "0", "0", "0", "0", "X"],
+      ["X", "0", "0", "0", "X", "0", "0", "0", "0", "0", "0", "X"],
+      ["X", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "X"],
+      ["X", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "X"],
+      ["X", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "X"],
+      ["X", "X", "X", "X", "X", "X", "X", "X", "X", "X", "X", "X"]
+    ];
+
+    let ballCordStart = board[1][1];
+    let ballCord = [];
+    let play = true;
+    let timer;
+    let NewX =1;
+    let NewY =1;
+
+    const time = 500;
+
+    const create = () => {
+      const container = document.querySelector(".container");
+      document.querySelector(".container").innerHTML = "";
+
+      const table = document.createElement("div");
+
+      for (let i = 0; i < board.length; i++) {
+        const row = document.createElement("div");
+        row.setAttribute("class", "row");
+        for (let j = 0; j < board[i].length; j++) {
+          //
+
+          const col = document.createElement("div");
+          col.setAttribute("id", i + "_" + j);
+          col.setAttribute("class", "col");
+
+          switch (board[i][j]) {
+            case "X":
+              col.classList.add("border");
+              break;
+
+            case "1":
+              col.classList.add("ball");
+              break;
+
+            case "0":
+              col.classList.add("free");
+              break;
+
+            default:
+              break;
+          }
+
+          row.appendChild(col);
+        }
+        table.appendChild(row);
+      }
+      container.appendChild(table);
+    };
+    const findeBallCords = () => {
+      for (let i = 0; i < board.length; i++) {
+        for (let j = 0; j < board[i].length; j++) {
+          if (board[i][j] === "1") {
+            ballCord.push([i, j]);
+          }
+        }
+      }
+    };
+
+    const chengePostionBall = () => {
+      let x = ballCord[0][0];
+      let y = ballCord[0][1];
+
+      if(board[x][y+1] === 'X' ){
+        NewY = -1;
+      }
+      if(board[x][y-1] === 'X'){
+        NewY = 1;
+      }
+      
+      if(board[x+1][y] === 'X'){
+        NewX = -1;
+      }
+      if(board[x-1][y] === 'X'){
+        NewX = 1;
+      }
+            
+      board[x][y] = '0';       
+      board[x + NewX][y + NewY] = '1'; 
+      ballCord.splice(0,1);
+
+      if (play) {
+        create();
+        findeBallCords();
+
+        timer = setTimeout(chengePostionBall, time);
+      }
+    };
+
+    (() => {
+      create();
+      findeBallCords();
+      chengePostionBall();
+    })();
+  </script>
+</html>
